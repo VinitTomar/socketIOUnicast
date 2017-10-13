@@ -35,7 +35,7 @@ io.sockets.on('connect', function(client){
       receiverSocket.emit('recvmsg',{sender: sender, msg: msg});
     }
     else
-      client.emit('recvmsg',{sender: 'error', msg: 'reciver not available'});
+      client.emit('recvmsg',{sender: 'error', msg: 'reciver '+receiver+' not available'});
     //for(var i=0; i<cli)
     
     
