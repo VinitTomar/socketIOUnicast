@@ -1,0 +1,115 @@
+<!doctype>
+<html>
+  <head>
+    <title>Socket.io</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" 
+            crossorigin="anonymous">
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <style>
+      body{
+        padding: 15px;
+      }
+      
+      #chatArea{
+        display: none;
+      }
+    </style>
+    
+     <script>
+     
+      $(document).ready(function(){
+        var socket = io.connect();
+        var loginForm = $('#loginForm');
+        var loginArea = $('#loginArea') ;
+        var chatArea = $('#chatArea');
+        var chat = $('#chat');
+        var msgForm = $('#msgForm');
+        var username = $('#username');
+        var receiver = $('#receiver');
+        var message = $('#message');
+        
+        loginForm.submit(function(e){
+          e.preventDefault();
+          socket.emit('login',{name: username.val()});
+          loginArea.hide();
+          chatArea.show();
+        });
+        
+        msgForm.submit(function(e){
+          e.preventDefault();
+          socket.emit('sendmsg',{sender:username.val(), receiver:receiver.val(), msg: message.val()})
+          chat.append('<div class="well"> <strong>'+username.val()+': </strong>'+message.val()+'</div>');
+          message.val('');
+        });
+        
+        socket.on('recvmsg',function(data){
+          chat.append('<div class="well"> <strong>'+data.sender+': </strong>'+data.msg+'</div>');
+        });
+          
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row" style="text-align: center">
+        <h3>SocketIO Chat App</h3><hr>
+      </div>
+      
+      <div class='row' id='loginArea'>
+        <div class='col-sm-12'>
+          <form id='loginForm'>
+            <div class="form-group">
+              <label for="username">Username:</label>
+              <input type="text" id="username" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class = "row" id='chatArea'>
+        <div class='col-sm-3 well'  >
+          <h4>
+            Online Users
+          </h4>
+          <ul class='list-group' id='users'>        </ul>
+        </div>
+        <div class='col-sm-9 '>
+          <div id='chat'>         </div>
+          <form id='msgForm'>
+            <div class="form-group">
+              <label for="receiver">Receiver:</label>
+              <input  type="text" id="receiver" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="message">Message:</label>
+              <input type="text" id="message" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
