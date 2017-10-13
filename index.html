@@ -23,6 +23,8 @@
      <script>
      
       $(document).ready(function(){
+        
+        
         var socket = io.connect();
         var loginForm = $('#loginForm');
         var loginArea = $('#loginArea') ;
@@ -32,23 +34,27 @@
         var username = $('#username');
         var receiver = $('#receiver');
         var message = $('#message');
+        var user = $('#user');
+        
+       
         
         loginForm.submit(function(e){
           e.preventDefault();
           socket.emit('login',{name: username.val()});
           loginArea.hide();
+          user.html('Welcome <strong>'+username.val()+'</strong>');
           chatArea.show();
         });
         
         msgForm.submit(function(e){
           e.preventDefault();
           socket.emit('sendmsg',{sender:username.val(), receiver:receiver.val(), msg: message.val()})
-          chat.append('<div class="well"> <strong>'+username.val()+': </strong>'+message.val()+'</div>');
+          chat.append('<div class="well" style="text-align:right"> <strong>'+username.val()+': </strong>'+message.val()+'</div>');
           message.val('');
         });
         
         socket.on('recvmsg',function(data){
-          chat.append('<div class="well"> <strong>'+data.sender+': </strong>'+data.msg+'</div>');
+          chat.append('<div class="well" style="text-align:left"> <strong>'+data.sender+': </strong>'+data.msg+'</div>');
         });
           
       });
@@ -80,7 +86,9 @@
           <ul class='list-group' id='users'>        </ul>
         </div>
         <div class='col-sm-9 '>
-          <div id='chat'>         </div>
+          <div id='chat' style="text-align: center">
+            <h2 id='user'>     </h2>
+          </div>
           <form id='msgForm'>
             <div class="form-group">
               <label for="receiver">Receiver:</label>
